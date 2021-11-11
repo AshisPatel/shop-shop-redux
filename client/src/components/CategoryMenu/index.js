@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
-import { useStoreContext } from "../../utils/GlobalState";
 import { useQuery } from '@apollo/client';
 import { QUERY_CATEGORIES } from '../../utils/queries';
-import { UPDATE_CATEGORIES, UPDATE_CURRENT_CATEGORY } from "../../utils/actions";
 import {useSelector, useDispatch} from "react-redux";
 import { updateCategories } from '../../redux/categories';
 import { setCurrentCategory } from '../../redux/currentCategory';
