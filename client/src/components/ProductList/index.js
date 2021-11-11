@@ -6,24 +6,25 @@ import { QUERY_PRODUCTS } from '../../utils/queries';
 import spinner from '../../assets/spinner.gif';
 
 import { useStoreContext } from '../../utils/GlobalState';
-import { UPDATE_PRODUCTS } from '../../utils/actions';
+
+
+import {useSelector, useDispatch} from "react-redux";
+import { updateProducts } from '../../redux/products';
 
 import { idbPromise } from '../../utils/helpers';
 
 function ProductList() {
-  const [state, dispatch] = useStoreContext();
-  const { currentCategory, products } = state;
+  const [state] = useStoreContext();
+  const { currentCategory } = state;
+  const products = useSelector(state => state.products);
+  const dispatch = useDispatch();
 
   const { loading, data } = useQuery(QUERY_PRODUCTS);
 
   useEffect(() => {
     // store data in global state
     if(data) {
-      dispatch({
-        type: UPDATE_PRODUCTS,
-        products: data.products
-      });
-
+      dispatch(updateProducts(data.products));
       // store all data in IndexedDB
       data.products.forEach(product => {
         // structured as store, method, object
@@ -33,10 +34,7 @@ function ProductList() {
     } else if(!loading) {
       idbPromise('products', 'get').then((products) => {
         // grab data from promise and set it to the global state for products
-        dispatch({
-          type: UPDATE_PRODUCTS,
-          products: products
-        });
+        dispatch(updateProducts(products));
       });
     }
     
