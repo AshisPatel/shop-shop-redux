@@ -3,14 +3,16 @@ import { useStoreContext } from "../../utils/GlobalState";
 import { useQuery } from '@apollo/client';
 import { QUERY_CATEGORIES } from '../../utils/queries';
 import { UPDATE_CATEGORIES, UPDATE_CURRENT_CATEGORY } from "../../utils/actions";
+import {useSelector, useDispatch} from "react-redux";
+import { updateCategories } from '../../redux/categories';
+import { setCurrentCategory } from '../../redux/currentCategory';
 import { idbPromise } from '../../utils/helpers';
 
 function CategoryMenu() {
 
-  // useStoreContext will import global state and dispatch to be able to update the state
-  const [state, dispatch] = useStoreContext();
-  // destructure the categories key from the global state as its the only one you needed 
-  const { categories } = state;
+  const categories = useSelector(state => state.categories);
+  const dispatch = useDispatch();
+
   // useQuery will obtain our category data from GraphQL
   const { data: categoryData, loading } = useQuery(QUERY_CATEGORIES);
 
@@ -20,10 +22,7 @@ function CategoryMenu() {
     if (categoryData) {
       // execute dispatch function with our action object indicating the type of action and then the updated state
       // NOTE: dispatch is sending the action parameter of the reducer function - thus the type object is read in the switch statement and the part of state that needs to be updated is sent in as the second arguement. In this case, it will be action.categories
-      dispatch({
-        type: UPDATE_CATEGORIES,
-        categories: categoryData.categories
-      });
+      dispatch(updateCategories(categoryData.categories)); 
       // add category data to indexedDB store
       categoryData.categories.forEach(category => {
         idbPromise('categories', 'put', category);
@@ -31,20 +30,14 @@ function CategoryMenu() {
       // check to see if the useQuery loading parameter exists, it will not if the user is offline and so we'll grab the data from the indexedDB store instead
     } else if (!loading) {
       idbPromise('categories', 'get').then(categoriesData => {
-        dispatch({
-          type: UPDATE_CATEGORIES,
-          categories: categoriesData
-        });
+        dispatch(updateCategories(categoryData.categories)); 
       });
     }
     // why does this run on dispatch update?
   }, [categoryData, dispatch, loading]);
 
   const handleClick = (id) => {
-    dispatch({
-      type: UPDATE_CURRENT_CATEGORY,
-      currentCategory: id
-    });
+    dispatch(setCurrentCategory(id));
   };
 
 
