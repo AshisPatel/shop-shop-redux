@@ -1,10 +1,11 @@
 import redux, {createStore, applyMiddleware, combineReducers} from "redux";
 // import reducers
 import productsReducer from "./products";
-console.log(productsReducer); 
+import currentCategoryReducer from "./currentCategory";
 
 const rootReducer = combineReducers({
-    products: productsReducer
+    products: productsReducer,
+    currentCategory: currentCategoryReducer
 });
 
 const store = createStore(rootReducer);
