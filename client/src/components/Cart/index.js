@@ -7,6 +7,9 @@ import { useStoreContext } from "../../utils/GlobalState";
 import { TOGGLE_CART, ADD_MULTIPLE_TO_CART } from "../../utils/actions";
 import { idbPromise } from '../../utils/helpers';
 
+import { useSelector, useDispatch } from "react-redux";
+import { toggleCart, addMultipleToCart } from "../../redux/cart";
+
 import { QUERY_CHECKOUT } from "../../utils/queries";
 import { loadStripe } from '@stripe/stripe-js';
 import { useLazyQuery } from '@apollo/client';
@@ -14,15 +17,16 @@ import { useLazyQuery } from '@apollo/client';
 const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
 
 const Cart = () => {
-    const [state, dispatch] = useStoreContext();
-    const { cart, cartOpen } = state;
+    const { cart, cartOpen } = useSelector(state => state.cart);
+    console.log(`Cart: ${cart} and cartOpen ${cartOpen}`)
+    const dispatch = useDispatch();
+    // const [state, dispatch] = useStoreContext();
+    // const { cart, cartOpen } = state;
     // data will be queried and returned here but only when the getCheckout function is called rather than on componenet render like useQuery
     const [getCheckout, { data }] = useLazyQuery(QUERY_CHECKOUT);
     // console.log(state);
-    const toggleCart = () => {
-        dispatch({
-            type: TOGGLE_CART
-        });
+    const toggleCartDisplay = () => {
+        dispatch(toggleCart());
     }
 
     // check indexedDB's 'cart' store everytime the cart opens
@@ -33,10 +37,7 @@ const Cart = () => {
             // have to wait for the get request to complete before adding to the global state
             const indexedCart = await idbPromise('cart', 'get');
             console.log(`useEffect cart: ${indexedCart}`); 
-            dispatch({
-                type: ADD_MULTIPLE_TO_CART,
-                products: indexedCart
-            });
+            dispatch(addMultipleToCart(indexedCart));
         };
         // if the globalState for the cart is empty, check to see if there are any objects in the cart indexDB store
         // When the user closes the browser, the globalState is wiped and will be re-instantiated as blank
@@ -83,7 +84,7 @@ const Cart = () => {
 
     if (!cartOpen) {
         return (
-            <div className="cart-closed" onClick={toggleCart}>
+            <div className="cart-closed" onClick={toggleCartDisplay}>
                 <span
                     role="img"
                     aria-label="cart">🛒</span>
@@ -93,7 +94,7 @@ const Cart = () => {
 
     return (
         <div className="cart">
-            <div className="close" onClick={toggleCart}>[close]</div>
+            <div className="close" onClick={toggleCartDisplay}>[close]</div>
             <h2>Shopping Cart</h2>
             <div>
                 {cart.length ?

@@ -78,8 +78,6 @@ export const reducer = (state, action) => {
             };
         // if the action is 'TOGGLE_CART', switch display from what it was
         case TOGGLE_CART: 
-               
-
             return {
                 ...state,
                 cartOpen: !state.cartOpen
