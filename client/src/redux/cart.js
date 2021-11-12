@@ -74,6 +74,7 @@ export default function cartReducer(cart = initialState, {type, payload}) {
         case "UPDATE_CART_QUANTITY":
 
             return {
+                ...cart, 
                 cart: cart.cart.map(product =>{
                     if(product._id === payload._id) {
                         product.purchaseQuantity = payload.purchaseQuantity

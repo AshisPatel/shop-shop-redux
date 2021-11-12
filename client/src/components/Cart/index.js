@@ -2,14 +2,9 @@ import React, { useEffect } from 'react';
 import CartItem from '../CartItem';
 import Auth from '../../utils/auth';
 import './style.css';
-
-import { useStoreContext } from "../../utils/GlobalState";
-import { TOGGLE_CART, ADD_MULTIPLE_TO_CART } from "../../utils/actions";
 import { idbPromise } from '../../utils/helpers';
-
 import { useSelector, useDispatch } from "react-redux";
 import { toggleCart, addMultipleToCart } from "../../redux/cart";
-
 import { QUERY_CHECKOUT } from "../../utils/queries";
 import { loadStripe } from '@stripe/stripe-js';
 import { useLazyQuery } from '@apollo/client';
@@ -25,10 +20,6 @@ const Cart = () => {
     // data will be queried and returned here but only when the getCheckout function is called rather than on componenet render like useQuery
     const [getCheckout, { data }] = useLazyQuery(QUERY_CHECKOUT);
     // console.log(state);
-    const toggleCartDisplay = () => {
-        dispatch(toggleCart());
-    }
-
     // check indexedDB's 'cart' store everytime the cart opens
     // our dependency array includes all the items that the useEffect() hook is dependent upon, and only runs again (after mounting) if any of the items in the dependency array have changed
     // in this case, that means that even if there is nothing to retrieve from the indexedDB store, the cart.length variable does not change from 0 and so the dependency array does not execute again
@@ -84,7 +75,7 @@ const Cart = () => {
 
     if (!cartOpen) {
         return (
-            <div className="cart-closed" onClick={toggleCartDisplay}>
+            <div className="cart-closed" onClick={() =>  dispatch(toggleCart())}>
                 <span
                     role="img"
                     aria-label="cart">🛒</span>
@@ -94,7 +85,7 @@ const Cart = () => {
 
     return (
         <div className="cart">
-            <div className="close" onClick={toggleCartDisplay}>[close]</div>
+            <div className="close" onClick={() =>  dispatch(toggleCart())}>[close]</div>
             <h2>Shopping Cart</h2>
             <div>
                 {cart.length ?

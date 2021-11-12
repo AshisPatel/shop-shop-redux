@@ -5,8 +5,9 @@ import { useQuery } from '@apollo/client';
 import { QUERY_PRODUCTS } from '../utils/queries';
 import spinner from '../assets/spinner.gif';
 
-import { useStoreContext } from "../utils/GlobalState";
-import { UPDATE_PRODUCTS, REMOVE_FROM_CART, UPDATE_CART_QUANTITY, ADD_TO_CART } from "../utils/actions";
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromCart, updateCartQuantity, addToCart } from "../redux/cart";
+import {  updateProducts } from "../redux/products";
 
 import Cart from "../components/Cart";
 
@@ -14,8 +15,11 @@ import { idbPromise } from "../utils/helpers";
 
 function Detail() {
   const { id } = useParams();
-  const [state, dispatch] = useStoreContext();
-  const { products, cart } = state;
+
+  const { cart } = useSelector(state => state.cart);
+  const products = useSelector(state => state.products);
+  const dispatch = useDispatch();
+
   const { loading, data } = useQuery(QUERY_PRODUCTS);
 
   const [currentProduct, setCurrentProduct] = useState({});
@@ -29,10 +33,7 @@ function Detail() {
     if (products.length) {
       setCurrentProduct(products.find(product => product._id === id));
     } else if (data) {
-      dispatch({
-        type: UPDATE_PRODUCTS,
-        products: data.products
-      });
+      dispatch(updateProducts(data.products));
       // store the products data to indexedDB
       data.products.forEach(product => {
         idbPromise('products', 'put', product);
@@ -40,25 +41,18 @@ function Detail() {
       // if the user is offline the loading parameter will not exist, and we'll need to populate our global state using indexedDB
     } else if (!loading) {
       idbPromise('products', 'get').then(indexedProducts => {
-        dispatch({
-          type: UPDATE_PRODUCTS,
-          products: indexedProducts
-        });
+        dispatch(updateProducts(indexedProducts));
       });
     }
   }, [products, data, loading, dispatch, id]);
 
 
-  const addToCart = () => {
+  const addItemToCart = () => {
     // check if item is already in cart and call the appropraite action 
     // can either use currentProduct._id or id from useParams as they will be the same, perhaps better to use id it's cleaner?
     const itemInCart = cart.find(cartItem => cartItem._id === id);
     if (itemInCart) {
-      dispatch({
-        type: UPDATE_CART_QUANTITY,
-        _id: id,
-        purchaseQuantity: itemInCart.purchaseQuantity + 1
-      })
+      dispatch(updateCartQuantity(id, itemInCart.purchaseQuantity + 1));
       // pass in a put request to indexedDB to upate the product in the cart store with the updated quantity of the item
       // The third arguement is the object we are sending to the store, therefore we destructure our itemInCart to contain all the other old parameters, and include our new purchaseQuantity key
       idbPromise('cart', 'put', {
@@ -66,10 +60,7 @@ function Detail() {
         purchaseQuantity: itemInCart.purchaseQuantity + 1
       });
     } else {
-      dispatch({
-        type: ADD_TO_CART,
-        product: { ...currentProduct, purchaseQuantity: 1 }
-      });
+      dispatch(addToCart({...currentProduct, purchaseQuantity: 1}))
       // if product is not in cart, add the currentProduct with a purchaseQuantity of 1
       idbPromise('cart', 'put', {
         ...currentProduct,
@@ -79,12 +70,9 @@ function Detail() {
   };
 
   // removes all of those items from the cart 
-  const removeFromCart = () => {
+  const removeItemFromCart = () => {
     // once again, can use id or currentProduct._id
-    dispatch({
-      type: REMOVE_FROM_CART,
-      _id: id
-    });
+    dispatch(removeFromCart(id));
     // also remove the item from the indexedDB cart store
     idbPromise('cart', 'delete', currentProduct);
 
@@ -103,9 +91,9 @@ return (
 
         <p>
           <strong>Price:</strong>${currentProduct.price}{' '}
-          <button onClick={addToCart}>Add to Cart</button>
+          <button onClick={addItemToCart}>Add to Cart</button>
           <button 
-            onClick={removeFromCart}
+            onClick={removeItemFromCart}
             disabled={!cart.some(cartItem => cartItem._id === currentProduct._id)}
           >
             Remove from Cart

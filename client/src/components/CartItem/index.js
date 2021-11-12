@@ -1,16 +1,13 @@
 import React from 'react';
-import { useStoreContext } from '../../utils/GlobalState';
-import { REMOVE_FROM_CART, UPDATE_CART_QUANTITY } from "../../utils/actions";
+import { useDispatch } from "react-redux";
+import { removeFromCart, updateCartQuantity } from "../../redux/cart";
 import { idbPromise } from "../../utils/helpers";
 
 const CartItem =({ item }) => {
-    const [state, dispatch] = useStoreContext();
+    const dispatch = useDispatch();
 
-    const removeFromCart = () => {
-        dispatch({
-            type: REMOVE_FROM_CART,
-            _id: item._id
-        });
+    const handleClick = () => {
+        dispatch(removeFromCart(item._id));
         // mimic functionality to manage indexedDB cart store
         idbPromise('cart', 'delete', item);
     };
@@ -20,17 +17,10 @@ const CartItem =({ item }) => {
         const { value } = e.target;
 
         if (value === '0') {
-            dispatch({
-                type: REMOVE_FROM_CART,
-                _id: item._id
-            });
+            dispatch(removeFromCart(item._id));
             idbPromise('cart', 'delete', item);
         } else {
-            dispatch({
-                type: UPDATE_CART_QUANTITY,
-                _id: item._id,
-                purchaseQuantity: value
-            });
+            dispatch(updateCartQuantity(item._id, value));
             idbPromise('cart', 'put', {...item, purchaseQuantity: value});
         }
     }
@@ -56,7 +46,7 @@ const CartItem =({ item }) => {
                     <span
                         role="img"
                         aria-label="trash"
-                        onClick={() => removeFromCart()}
+                        onClick={() => handleClick()}
                     >
                         🗑️
                     </span>
