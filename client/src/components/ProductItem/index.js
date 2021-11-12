@@ -6,7 +6,7 @@ import { addToCart, updateCartQuantity } from "../../redux/cart";
 
 function ProductItem(item) {
 
-  const { cart, cartOpen } = useSelector(state => state.cart);
+  const { cart } = useSelector(state => state.cart);
   const dispatch = useDispatch();
 
   const {
