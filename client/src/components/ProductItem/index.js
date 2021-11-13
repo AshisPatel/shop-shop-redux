@@ -27,7 +27,7 @@ function ProductItem(item) {
       // mimic request but for indexedDB
       idbPromise('cart', 'put', {
         ...itemInCart,
-        purchaseQuantity: itemInCart.purchaseQuantity + 1
+        purchaseQuantity: parseInt(itemInCart.purchaseQuantity) + 1
       });
       // else add item to card with purchaseQuantity of 1
     } else {

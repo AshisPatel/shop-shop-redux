@@ -57,7 +57,7 @@ function Detail() {
       // The third arguement is the object we are sending to the store, therefore we destructure our itemInCart to contain all the other old parameters, and include our new purchaseQuantity key
       idbPromise('cart', 'put', {
         ...itemInCart,
-        purchaseQuantity: itemInCart.purchaseQuantity + 1
+        purchaseQuantity: parseInt(itemInCart.purchaseQuantity) + 1
       });
     } else {
       dispatch(addToCart({...currentProduct, purchaseQuantity: 1}))
