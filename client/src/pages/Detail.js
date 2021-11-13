@@ -52,7 +52,7 @@ function Detail() {
     // can either use currentProduct._id or id from useParams as they will be the same, perhaps better to use id it's cleaner?
     const itemInCart = cart.find(cartItem => cartItem._id === id);
     if (itemInCart) {
-      dispatch(updateCartQuantity(id, itemInCart.purchaseQuantity + 1));
+      dispatch(updateCartQuantity(id, parseInt(itemInCart.purchaseQuantity) + 1));
       // pass in a put request to indexedDB to upate the product in the cart store with the updated quantity of the item
       // The third arguement is the object we are sending to the store, therefore we destructure our itemInCart to contain all the other old parameters, and include our new purchaseQuantity key
       idbPromise('cart', 'put', {

@@ -23,7 +23,7 @@ function ProductItem(item) {
     
     // if item exists, update cart quantity by passing in the item._id that we are clicking, and also add 1 to the item's current purchaseQuantity
     if(itemInCart) {
-      dispatch(updateCartQuantity(item._id, itemInCart.purchaseQuantity + 1));
+      dispatch(updateCartQuantity(item._id, parseInt(itemInCart.purchaseQuantity) + 1));
       // mimic request but for indexedDB
       idbPromise('cart', 'put', {
         ...itemInCart,
