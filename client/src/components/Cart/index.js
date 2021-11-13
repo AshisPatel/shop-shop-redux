@@ -34,6 +34,10 @@ const Cart = () => {
         if(!cart.length) {
             getCart();
         }
+
+        if(cart.length && !cartOpen) {
+            dispatch(toggleCart());
+        }
     }, [cart.length, dispatch]);
 
     const calculateTotal = () => {
