@@ -4,6 +4,8 @@
   
   Shop Shop is an example of an ecommerce webpage built using the MERN stack. Additional technologies include using Redux to manage the global state of the frontend and uses GraphQL to manage requests to the server's database. Furthermore, Shop Shop utilizes the Stripe API in test mode to simulate the process of checking out. 
 
+  ![Walkthrough of adding items on Shop Shop and checking out in the Stripe test environment](https://github.com/AshisPatel/shop-shop-redux/blob/main/repo-assets/ssrd.gif)
+
   <h3>Functionality</h3>
 
   Redux has been described to me as both a technology and a philosophy. The philosophy is to use a global state that tracks multiple state variables that need to be accessed in many different componenets across the entire application. The global state as well as methods of changing the global state (dispatch actions) are passed into the entire App component by wrapping it in a "Provider" componenet from the Redux package and passing in the global state as a property and variable named "store". Under the hood, this is using React's Context API and the ability to pass on props to children componenets.  
