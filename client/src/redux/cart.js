@@ -63,13 +63,14 @@ export default function cartReducer(cart = initialState, {type, payload}) {
         case "ADD_MULTIPLE_TO_CART":
             return {
                 cart: [...cart.cart, ...payload],
-                cartOpen: true
+                cartOpen: cart.cart.length > 0 
             };
         case "REMOVE_FROM_CART":
             const newCart = cart.cart.filter(product => product._id !== payload)
+            console.log('New cart length is ' + newCart.length);
             return {
                 cart: newCart,
-                cartOpen: newCart.length > 0
+                cartOpen: newCart.length > 0 
             };
         case "UPDATE_CART_QUANTITY":
 

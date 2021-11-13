@@ -13,7 +13,6 @@ const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
 
 const Cart = () => {
     const { cart, cartOpen } = useSelector(state => state.cart);
-    console.log(`Cart: ${cart} and cartOpen ${cartOpen}`)
     const dispatch = useDispatch();
     // const [state, dispatch] = useStoreContext();
     // const { cart, cartOpen } = state;
@@ -26,8 +25,7 @@ const Cart = () => {
     useEffect(() => {
         async function getCart() {
             // have to wait for the get request to complete before adding to the global state
-            const indexedCart = await idbPromise('cart', 'get');
-            console.log(`useEffect cart: ${indexedCart}`); 
+            const indexedCart = await idbPromise('cart', 'get'); 
             dispatch(addMultipleToCart(indexedCart));
         };
         // if the globalState for the cart is empty, check to see if there are any objects in the cart indexDB store

@@ -75,8 +75,6 @@ function Detail() {
     dispatch(removeFromCart(id));
     // also remove the item from the indexedDB cart store
     idbPromise('cart', 'delete', currentProduct);
-
-    console.log(cart);
   }
 
 return (
