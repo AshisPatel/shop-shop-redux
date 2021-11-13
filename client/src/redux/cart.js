@@ -13,7 +13,7 @@ export const addToCart = (product) => {
 
 export const addMultipleToCart = (products) => {
     return {
-        type: "ADD_MULTPLE_TO_CART",
+        type: "ADD_MULTIPLE_TO_CART",
         payload: products
     };
 };
@@ -62,7 +62,7 @@ export default function cartReducer(cart = initialState, {type, payload}) {
             };
         case "ADD_MULTIPLE_TO_CART":
             return {
-                cart: [...cart.cart, payload],
+                cart: [...cart.cart, ...payload],
                 cartOpen: true
             };
         case "REMOVE_FROM_CART":
