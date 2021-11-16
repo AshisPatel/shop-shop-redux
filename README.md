@@ -3,6 +3,8 @@
   <h2>Description</h2>
   
   Shop Shop is an example of an ecommerce webpage built using the MERN stack. Additional technologies include using Redux to manage the global state of the frontend and uses GraphQL to manage requests to the server's database. Furthermore, Shop Shop utilizes the Stripe API in test mode to simulate the process of checking out. 
+  
+  **SN:** Shoutout to the Full-Stack Coding Bootcamp from the University of Texas for providing initial CSS assets and back-end code for this project. 
 
   ![Walkthrough of adding items on Shop Shop and checking out in the Stripe test environment](https://github.com/AshisPatel/shop-shop-redux/blob/main/repo-assets/ssrd.gif)
 
